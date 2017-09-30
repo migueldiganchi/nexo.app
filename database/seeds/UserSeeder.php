@@ -34,15 +34,15 @@ class UserSeeder extends Seeder
     public function createAdminUser()
     {
         $user = App\User::create([
-            'name' => 'Amitav Roy',
-            'email' => 'reachme@amitavroy.com',
+            'name' => 'Miguel Diganchi',
+            'email' => 'migueldiganchi@gmail.com',
             'password' => bcrypt('password'),
             'active' => 1,
         ]);
 
         $profile = App\Profile::create([
             'user_id' => $user->id,
-            'country' => 'India',
+            'country' => 'Argentina',
             'designation' => 'Web developer',
             'options' => ['sidebar' => true]
         ]);
