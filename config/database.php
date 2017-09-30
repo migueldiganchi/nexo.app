@@ -45,13 +45,13 @@ return [
             'prefix' => '',
         ],
 
-        'mysql' => [
+         'mysql' => [
             'driver' => 'mysql',
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
-            'database' => env('app_nexus', 'forge'),
-            'username' => env('qa2developer', 'forge'),
-            'password' => env('qa2d3v', ''),
+            'database' => env('DB_DATABASE', 'app_nexus'),
+            'username' => env('DB_USERNAME', 'qa2developer'),
+            'password' => env('DB_PASSWORD', 'qa2d3v'),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
