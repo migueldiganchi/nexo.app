@@ -42,19 +42,19 @@ class MediaApiController extends Controller
             return response(['message' => $validator->errors()], 433);
         }
 
+        // read file data from request
         $file = $request->file('file');
         $folder = 'uploads/' . Carbon::now()->year . '/' . Carbon::now()->month . '/';
         $uniqid = uniqid();
         $mainFileName = $uniqid . '.' . $file->getClientOriginalExtension();
         $thumbFileName = $uniqid . '_thumb.' . $file->getClientOriginalExtension();
 
-        // checking if the folder exist
-        // if not, create the folder
+        // if upload folder not exist, create it
         if (!file_exists(public_path($folder))) {
             mkdir(public_path($folder), 0755, true);
         }
 
-        $mainImage = Image::make($request->file('file'))
+        $mainImage = Image::make($file)
             ->resize(1080, null, function ($constraint) {
                 $constraint->aspectRatio();
                 $constraint->upsize();
@@ -62,9 +62,9 @@ class MediaApiController extends Controller
             ->save(public_path($folder) . $mainFileName);
 
         // making the media entry
-        $media = $mediaUploader->fromSource(public_path($folder) . $mainFileName)
-            ->toDirectory($folder)
-            ->upload();
+        // $media = $mediaUploader->fromSource(public_path($folder) . $mainFileName)
+        //     ->toDirectory($folder)
+        //     ->upload();
 
         $thumbImage = Image::make($request->file('file'))
             ->resize(400, null, function ($constraint) {
@@ -73,7 +73,7 @@ class MediaApiController extends Controller
             })
             ->save(public_path($folder) . $thumbFileName);
 
-        return response()->json(['data' => $media], 201);
+        return response()->json(['data' => $file], 201);
     }
 
     public function imageMetaData(Request $request)
