@@ -44,7 +44,9 @@ class MediaApiController extends Controller
 
         // read file data from request
         $file = $request->file('file');
-        $folder = 'uploads/' . Carbon::now()->year . '/' . Carbon::now()->month . '/';
+        $folder = 'uploads' . '/' . 
+            Carbon::now()->year . '/' . 
+            Carbon::now()->month . '/';
         $uniqid = uniqid();
         $mainFileName = $uniqid . '.' . $file->getClientOriginalExtension();
         $thumbFileName = $uniqid . '_thumb.' . $file->getClientOriginalExtension();
@@ -61,19 +63,20 @@ class MediaApiController extends Controller
             })
             ->save(public_path($folder) . $mainFileName);
 
-        // making the media entry
-        // $media = $mediaUploader->fromSource(public_path($folder) . $mainFileName)
-        //     ->toDirectory($folder)
-        //     ->upload();
-
-        $thumbImage = Image::make($request->file('file'))
+        $thumbImage = Image::make($file)
             ->resize(400, null, function ($constraint) {
                 $constraint->aspectRatio();
                 $constraint->upsize();
             })
             ->save(public_path($folder) . $thumbFileName);
 
-        return response()->json(['data' => $file], 201);
+        // making the media entry
+        $media = $mediaUploader->fromSource($file)
+            ->toDirectory($folder)
+            ->useFilename($mainFileName)
+            ->upload();
+
+        return response()->json(['data' => $media], 201);
     }
 
     public function imageMetaData(Request $request)
