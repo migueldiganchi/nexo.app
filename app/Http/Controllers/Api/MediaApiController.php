@@ -56,6 +56,7 @@ class MediaApiController extends Controller
             mkdir(public_path($folder), 0755, true);
         }
 
+        // create main image
         $mainImage = Image::make($file)
             ->resize(1080, null, function ($constraint) {
                 $constraint->aspectRatio();
@@ -63,6 +64,7 @@ class MediaApiController extends Controller
             })
             ->save(public_path($folder) . $mainFileName);
 
+        // create thumbnail of the image
         $thumbImage = Image::make($file)
             ->resize(400, null, function ($constraint) {
                 $constraint->aspectRatio();
@@ -73,7 +75,7 @@ class MediaApiController extends Controller
         // making the media entry
         $media = $mediaUploader->fromSource($file)
             ->toDirectory($folder)
-            ->useFilename($mainFileName)
+            ->useFilename($uniqid)
             ->upload();
 
         return response()->json(['data' => $media], 201);
